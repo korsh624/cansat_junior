@@ -1,7 +1,6 @@
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-// BMP280_DEV - I2C Communications (Alternative Address), Default Configuration, Normal Conversion
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
+#include <SPI.h>
+#include <SD.h>
+const int PIN_CHIP_SELECT = 4;
 #include <BMP280_DEV.h>                           // Include the BMP280_DEV.h library
 #include <Adafruit_BMP280.h>
 #include <MPU9250_asukiaaa.h>
@@ -11,11 +10,15 @@ float temperature, pressure, altitude;            // Create the temperature, pre
 BMP280_DEV bmp280;                                // Instantiate (create) a BMP280_DEV object and set-up for I2C operation
 int altitude_data = 0;
 String message_bmp = "";
-String accelgyromag="";
+String accelgyromag = "";
 boolean start = true;
 void setup()
 {
   Serial.begin(115200);                           // Initialise the serial port
+  Serial.print("Initializing SD card...");
+  // Этот пин обязательно должен быть определен как OUTPUT
+  pinMode(10, OUTPUT);
+  Serial.println("card initialized.");
   bmp280.begin(BMP280_I2C_ALT_ADDR);              // Default initialisation with alternative I2C address (0x76), place the BMP280 into SLEEP_MODE
   //bmp280.setPresOversampling(OVERSAMPLING_X4);    // Set the pressure oversampling to X4
   //bmp280.setTempOversampling(OVERSAMPLING_X1);    // Set the temperature oversampling to X1
@@ -26,14 +29,30 @@ void setup()
   mySensor.beginGyro();
   mySensor.beginMag();
 
+
 }
 
 void loop()
 {
-
+  
 
   readbmp280();
   readaccelgyromag();
+  String writestring= message_bmp+accelgyromag;
+  File telemetry = SD.open("datalog.csv", FILE_WRITE);
+  if (telemetry) {
+    for(int i=1;i<writestring.length();i++){
+    telemetry.print(writestring);
+    Serial.println(writestring);
+    }
+    telemetry.println(" ");
+    telemetry.close();
+    
+  }
+  else {
+    // Сообщаем об ошибке, если все плохо
+    Serial.println("error opening datalog.csv.csv");
+  }
 
 }
 void readbmp280() {
@@ -58,8 +77,8 @@ void readbmp280() {
   }
 
 }
-void readaccelgyromag(){
-    if (mySensor.accelUpdate() == 0) {
+void readaccelgyromag() {
+  if (mySensor.accelUpdate() == 0) {
     aX = mySensor.accelX();
     aY = mySensor.accelY();
     aZ = mySensor.accelZ();
@@ -68,6 +87,7 @@ void readaccelgyromag(){
     Serial.print("\taccelY: " + String(aY));
     Serial.print("\taccelZ: " + String(aZ));
     Serial.print("\taccelSqrt: " + String(aSqrt));
+     
   }
 
   if (mySensor.gyroUpdate() == 0) {
@@ -90,6 +110,9 @@ void readaccelgyromag(){
     Serial.print("\thorizontalDirection: " + String(mDirection));
   }
 
-String accelgyromag="accelX=" + String(aX)+" taccelY=" + String(aY)+" taccelZ=" + String(aZ)+" tgyroX=" + String(gX)+" tgyroY=" + String(gY)+" tgyroZ=" + String(gZ)+ " tmagX=" + String(mX)+" tmaxY=" + String(mY)+" tmagZ=" + String(mZ)+" thorizontalDirection=" + String(mDirection);
-Serial.println(accelgyromag);
+  String accelgyromag = "accelX=" + String(aX) + " taccelY=" + String(aY) + " taccelZ=" + String(aZ) + " tgyroX=" + String(gX) + " tgyroY=" + String(gY) + " tgyroZ=" + String(gZ) + " tmagX=" + String(mX) + " tmaxY=" + String(mY) + " tmagZ=" + String(mZ) + " thorizontalDirection=" + String(mDirection);
+  Serial.println(accelgyromag);
+}
+void readforsd(String writestring){
+  
 }
