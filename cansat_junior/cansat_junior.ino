@@ -43,22 +43,20 @@ void loop()
 
   readbmp280();
   readaccelgyromag();
-  String writestring= message_bmp+accelgyromag;
-//  File telemetry = SD.open("datalog.csv", FILE_WRITE);
-//  if (telemetry) {
-//    for(int i=1;i<writestring.length();i++){
-//    telemetry.print(writestring);
-//    Serial.println(writestring);
-//    }
-//    telemetry.println(" ");
-//    telemetry.close();
-//    
-//  }
-//  else {
-//    // Сообщаем об ошибке, если все плохо
-//    Serial.println("error opening datalog.csv.csv");
-//  }
 
+
+}
+void write2sd(String data, String filname){
+    File telemetry = SD.open("filname", FILE_WRITE);
+  if (telemetry) {
+    telemetry.print(data);
+    Serial.println(data);
+    telemetry.close();
+  }
+  else {
+    // Сообщаем об ошибке, если все плохо
+    Serial.println("error opening datalog.csv.csv");
+  }
 }
 void readbmp280() {
   message_bmp = "";
