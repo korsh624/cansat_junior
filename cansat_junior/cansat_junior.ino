@@ -1,10 +1,12 @@
+#include <Servo.h>
 #include <SPI.h>
 #include <SD.h>
-const int PIN_CHIP_SELECT = 4;
 #include <BMP280_DEV.h>                           // Include the BMP280_DEV.h library
 #include <Adafruit_BMP280.h>
 #include <MPU9250_asukiaaa.h>
+const int PIN_CHIP_SELECT = 4;
 MPU9250_asukiaaa mySensor;
+Servo servo;
 float aX, aY, aZ, aSqrt, gX, gY, gZ, mDirection, mX, mY, mZ;
 float temperature, pressure, altitude;            // Create the temperature, pressure and altitude variables
 BMP280_DEV bmp280;                                // Instantiate (create) a BMP280_DEV object and set-up for I2C operation
@@ -18,6 +20,7 @@ void setup()
   Serial.print("Initializing SD card...");
   // Этот пин обязательно должен быть определен как OUTPUT
   pinMode(10, OUTPUT);
+  servo.attach(9);
   Serial.println("card initialized.");
   bmp280.begin(BMP280_I2C_ALT_ADDR);              // Default initialisation with alternative I2C address (0x76), place the BMP280 into SLEEP_MODE
   //bmp280.setPresOversampling(OVERSAMPLING_X4);    // Set the pressure oversampling to X4
@@ -28,7 +31,9 @@ void setup()
   mySensor.beginAccel();
   mySensor.beginGyro();
   mySensor.beginMag();
-
+  servo.write(30);
+  delay(1000);
+  servo.write(90);
 
 }
 
@@ -39,20 +44,20 @@ void loop()
   readbmp280();
   readaccelgyromag();
   String writestring= message_bmp+accelgyromag;
-  File telemetry = SD.open("datalog.csv", FILE_WRITE);
-  if (telemetry) {
-    for(int i=1;i<writestring.length();i++){
-    telemetry.print(writestring);
-    Serial.println(writestring);
-    }
-    telemetry.println(" ");
-    telemetry.close();
-    
-  }
-  else {
-    // Сообщаем об ошибке, если все плохо
-    Serial.println("error opening datalog.csv.csv");
-  }
+//  File telemetry = SD.open("datalog.csv", FILE_WRITE);
+//  if (telemetry) {
+//    for(int i=1;i<writestring.length();i++){
+//    telemetry.print(writestring);
+//    Serial.println(writestring);
+//    }
+//    telemetry.println(" ");
+//    telemetry.close();
+//    
+//  }
+//  else {
+//    // Сообщаем об ошибке, если все плохо
+//    Serial.println("error opening datalog.csv.csv");
+//  }
 
 }
 void readbmp280() {
