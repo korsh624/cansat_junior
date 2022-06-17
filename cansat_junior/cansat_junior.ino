@@ -21,9 +21,14 @@ void setup()
   pinMode(10, OUTPUT);// Этот пин обязательно должен быть определен как OUTPUT
   pinMode(3, OUTPUT);// Этот пин включет радиопередатчик, описываем как выход
   digitalWrite(3, 1); // Включаем этот пин
-  pinMode(2, OUTPUT);//Этот пин отвечает за режим работы передатчика 1 - рабочий режим, 2 - режим настройки
+  pinMode(2, OUTPUT);//Этот пин отвечает за режим работы передатчика 1 - рабочий режим, 0 - режим настройки
   digitalWrite(2, 1); // переводим в рабочий режим
   servo.attach(9);// сервопривод подключен к 9 пину
+  if (!SD.begin(PIN_CHIP_SELECT)) {
+    Serial.println("Card failed, or not present");
+    // Если что-то пошло не так, завершаем работу:
+    return;
+  }
   Serial.println("card initialized.");// карта вкл
   bmp280.begin(BMP280_I2C_ALT_ADDR);//Инициализируем работу барометра
   bmp280.setTimeStandby(TIME_STANDBY_2000MS);// таймаут работы барометра
@@ -73,7 +78,7 @@ void readbmp280() {// создаем функцию для чтения данн
     Serial.print(altitude);
     Serial.println(F("m"));
     message_bmp = " Температура = " + String(temperature) + " Давление = " + String(pressure) + " Высота = " + String(altitude);// формируем сообщение от барометра
-//    Serial.println(message_bmp);//печатаем сообщение 
+    Serial.println(message_bmp);//печатаем сообщение 
   }
 
 }
@@ -111,5 +116,5 @@ void readaccelgyromag() {//создаем функцию для чтения с 
   }
   //формируем сообщение с суммой инфы
   String accelgyromag = "accelX=" + String(aX) + " taccelY=" + String(aY) + " taccelZ=" + String(aZ) + " tgyroX=" + String(gX) + " tgyroY=" + String(gY) + " tgyroZ=" + String(gZ) + " tmagX=" + String(mX) + " tmaxY=" + String(mY) + " tmagZ=" + String(mZ) + " thorizontalDirection=" + String(mDirection);
-//  Serial.println(accelgyromag);// печатаем сообщение с инфой
+  Serial.println(accelgyromag);// печатаем сообщение с инфой
 }

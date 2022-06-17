@@ -5,7 +5,7 @@
 const int PIN_CHIP_SELECT = 4;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.print("Initializing SD card...");
  // Этот пин обязательно должен быть определен как OUTPUT
   pinMode(10, OUTPUT);
@@ -34,7 +34,7 @@ void loop() {
 
   // Открываем файл, но помним, что одновременно можно работать только с одним файлом.
   // Если файла с таким именем не будет, ардуино создаст его.
-  File dataFile = SD.open("datalog.csv", FILE_WRITE);
+  File dataFile = SD.open("cansat.csv", FILE_WRITE);
 
   // Если все хорошо, то записываем строку:
   if (dataFile) {
@@ -45,6 +45,6 @@ void loop() {
   }
   else {
   // Сообщаем об ошибке, если все плохо
-    Serial.println("error opening datalog.csv");
+    Serial.println("cansat.csv");
   }
 }
