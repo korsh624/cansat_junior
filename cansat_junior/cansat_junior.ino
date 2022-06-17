@@ -41,6 +41,7 @@ void loop()
 {
   readbmp280(); // эта функция читает данные с барометра
   readaccelgyromag(); //эта функция читает с гироскопа акселерометра и компаса
+//  TeamID;Time;Altitude;Ax;Ay;Az;Gy;Gx;Gz;Mx;My;Mz;Pressure;Temperature;Start point;Separate point;Recovery point;Landing point \n 
 }
 void write2sd(String data, String filname) {// создаем функцию записи на вход подаем данные и имя файла в строковом формате
   File telemetry = SD.open("filname", FILE_WRITE);// открываем файл для записи, если файла нет то он автоматом создается
@@ -72,7 +73,7 @@ void readbmp280() {// создаем функцию для чтения данн
     Serial.print(altitude);
     Serial.println(F("m"));
     message_bmp = " Температура = " + String(temperature) + " Давление = " + String(pressure) + " Высота = " + String(altitude);// формируем сообщение от барометра
-    Serial.println(message_bmp);//печатаем сообщение 
+//    Serial.println(message_bmp);//печатаем сообщение 
   }
 
 }
@@ -110,5 +111,5 @@ void readaccelgyromag() {//создаем функцию для чтения с 
   }
   //формируем сообщение с суммой инфы
   String accelgyromag = "accelX=" + String(aX) + " taccelY=" + String(aY) + " taccelZ=" + String(aZ) + " tgyroX=" + String(gX) + " tgyroY=" + String(gY) + " tgyroZ=" + String(gZ) + " tmagX=" + String(mX) + " tmaxY=" + String(mY) + " tmagZ=" + String(mZ) + " thorizontalDirection=" + String(mDirection);
-  Serial.println(accelgyromag);// печатаем сообщение с инфой
+//  Serial.println(accelgyromag);// печатаем сообщение с инфой
 }
